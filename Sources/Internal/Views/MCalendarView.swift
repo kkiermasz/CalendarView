@@ -12,20 +12,23 @@
 import SwiftUI
 
 public struct MCalendarView: View {
-    @StateObject var selectedData: Data.MCalendarView
+    @Binding var selectedDate: Date?
+    @Binding var selectedRange: MDateRange?
     @State var scrolledID: Date? = {
       Date.now.start(of: .month)
     }()
     let monthsData: [Data.MonthView]
     let configData: CalendarConfig
 
-    init(_ selectedDate: Binding<Date?>?, _ selectedRange: Binding<MDateRange?>?, _ configBuilder: (CalendarConfig) -> CalendarConfig) {
-        self._selectedData = .init(wrappedValue: .init(selectedDate, selectedRange))
+    init(_ selectedDate: Binding<Date?>, _ selectedRange: Binding<MDateRange?>, _ configBuilder: (CalendarConfig) -> CalendarConfig) {
+        _selectedDate = selectedDate
+        _selectedRange = selectedRange
         self.configData = configBuilder(.init())
         self.monthsData = .generate()
     }
+  
     public var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 8) {
             createWeekdaysView()
             createScrollView()
         }
@@ -47,8 +50,8 @@ private extension MCalendarView {
         .scrollTargetLayout()
       }
       .scrollTargetBehavior(.viewAligned)
-      .onChange(of: selectedData.date) {
-        guard let date = selectedData.date else { return }
+      .onChange(of: selectedDate) {
+        guard let date = selectedDate else { return }
         withAnimation {
           proxy.scrollTo(date.start(of: .month), anchor: .top)
         }
@@ -75,7 +78,7 @@ private extension MCalendarView {
             .onAppear { onMonthChange(month) }
     }
     func createMonthView(_ data: Data.MonthView) -> some View {
-        MonthView(selectedDate: $selectedData.date, selectedRange: $selectedData.range, data: data, config: configData)
+      MonthView(selectedDate: $selectedDate, selectedRange: $selectedRange, data: data, config: configData)
     }
 }
 
