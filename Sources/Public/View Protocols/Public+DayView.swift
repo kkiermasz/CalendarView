@@ -12,6 +12,8 @@
 import SwiftUI
 
 public protocol DayView: View {
+    associatedtype DayLabel: View
+    associatedtype ContentType: View
     // MARK: Attributes
     var date: Date { get }
     var isCurrentMonth: Bool { get }
@@ -19,8 +21,8 @@ public protocol DayView: View {
     var selectedRange: Binding<MDateRange?>? { get }
 
     // MARK: View Customisation
-    func createContent() -> AnyView
-    func createDayLabel() -> AnyView
+    func createContent() -> ContentType
+    func createDayLabel() -> DayLabel
     func createSelectionView() -> AnyView
     func createRangeSelectionView() -> AnyView
 
@@ -31,22 +33,10 @@ public protocol DayView: View {
 
 // MARK: - Default View Implementation
 public extension DayView {
-    func createContent() -> AnyView { createDefaultContent().erased() }
-    func createDayLabel() -> AnyView { createDefaultDayLabel().erased() }
     func createSelectionView() -> AnyView { createDefaultSelectionView().erased() }
     func createRangeSelectionView() -> AnyView { createDefaultRangeSelectionView().erased() }
 }
 private extension DayView {
-    func createDefaultContent() -> some View { ZStack {
-        createSelectionView()
-        createRangeSelectionView()
-        createDayLabel()
-    }}
-    func createDefaultDayLabel() -> some View {
-        Text(getStringFromDay(format: "d"))
-            .font(.system(size: 14, weight: .medium))
-            .foregroundColor(isSelected() ? .backgroundPrimary : .onBackgroundPrimary)
-    }
     func createDefaultSelectionView() -> some View {
         Circle()
             .fill(Color.onBackgroundPrimary)

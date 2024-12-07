@@ -28,12 +28,12 @@ extension Date {
 
 // MARK: - Adding
 extension Date {
-    func adding(_ value: Int, _ component: Calendar.Component) -> Date { MCalendar.get().date(byAdding: component, value: value, to: self) ?? self }
+    public func adding(_ value: Int, _ component: Calendar.Component) -> Date { MCalendar.get().date(byAdding: component, value: value, to: self) ?? self }
 }
 
 // MARK: - Start & End
 extension Date {
-    func start(of component: Calendar.Component) -> Date { MCalendar.get().dateInterval(of: component, for: self)?.start ?? .distantPast }
+    public func start(of component: Calendar.Component) -> Date { MCalendar.get().dateInterval(of: component, for: self)?.start ?? .distantPast }
     func end(of component: Calendar.Component) -> Date { MCalendar.get().dateInterval(of: component, for: self)?.end.addingTimeInterval(-1) ?? .distantPast }
 }
 

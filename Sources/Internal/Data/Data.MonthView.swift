@@ -29,7 +29,7 @@ private extension [Data.MonthView] {
         guard startDate <= endDate else { fatalError("Start date must be lower than end date") }
 
         let numberOfMonthsBetweenDates = startDate.distance(to: endDate, in: .month)
-        return 0...Swift.min(numberOfMonthsBetweenDates, 12 * 10)
+        return 0...Swift.min(numberOfMonthsBetweenDates, 12 * 10 * 2)
     }
     static func createMonthDate(_ index: Int) -> Date { MCalendar.startDate.adding(index, .month) }
     static func createMonthViewData(_ monthStart: Date) -> Data.MonthView { .generate(monthStart) }

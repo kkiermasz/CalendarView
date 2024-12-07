@@ -93,5 +93,5 @@ public struct CalendarConfig: Configurable { public init() {}
     private(set) var dayView: (Date, Bool, Binding<Date?>?, Binding<MDateRange?>?) -> any DayView = DefaultDayView.init
 
     private(set) var scrollDate: Date? = nil
-    private(set) var onMonthChange: (Date) -> () = {_ in}
+    private(set) var onMonthChange: (Date) -> () = { _ in }
 }

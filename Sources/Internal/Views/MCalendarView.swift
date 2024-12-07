@@ -13,9 +13,11 @@ import SwiftUI
 
 public struct MCalendarView: View {
     @StateObject var selectedData: Data.MCalendarView
+    @State var scrolledID: Date? = {
+      Date.now.start(of: .month)
+    }()
     let monthsData: [Data.MonthView]
     let configData: CalendarConfig
-
 
     init(_ selectedDate: Binding<Date?>?, _ selectedRange: Binding<MDateRange?>?, _ configBuilder: (CalendarConfig) -> CalendarConfig) {
         self._selectedData = .init(wrappedValue: .init(selectedDate, selectedRange))
@@ -33,18 +35,29 @@ private extension MCalendarView {
     func createWeekdaysView() -> some View {
         configData.weekdaysView().erased()
     }
-    func createScrollView() -> some View { ScrollViewReader { reader in
-        ScrollView(showsIndicators: false) {
-            LazyVStack(spacing: configData.monthsSpacing) {
-                ForEach(monthsData, id: \.month, content: createMonthItem)
-            }
-            .padding(.top, configData.monthsPadding.top)
-            .padding(.bottom, configData.monthsPadding.bottom)
-            .background(configData.monthsViewBackground)
+  func createScrollView() -> some View {
+    ScrollViewReader { proxy in
+      ScrollView(showsIndicators: false) {
+        LazyVStack(spacing: configData.monthsSpacing) {
+          ForEach(monthsData, id: \.month, content: createMonthItem)
         }
-        .onAppear() { scrollToDate(reader, animatable: false) }
-        .onChange(of: configData.scrollDate) { _ in scrollToDate(reader, animatable: true) }
-    }}
+        .padding(.top, configData.monthsPadding.top)
+        .padding(.bottom, configData.monthsPadding.bottom)
+        .background(configData.monthsViewBackground)
+        .scrollTargetLayout()
+      }
+      .scrollTargetBehavior(.viewAligned)
+      .onChange(of: selectedData.date) {
+        guard let date = selectedData.date else { return }
+        withAnimation {
+          proxy.scrollTo(date.start(of: .month), anchor: .top)
+        }
+      }
+      .task {
+        proxy.scrollTo(scrolledID, anchor: .top)
+      }
+    }
+  }
 }
 private extension MCalendarView {
     func createMonthItem(_ data: Data.MonthView) -> some View {
@@ -52,6 +65,7 @@ private extension MCalendarView {
             createMonthLabel(data.month)
             createMonthView(data)
         }
+        .id(data.month)
     }
 }
 private extension MCalendarView {
@@ -67,11 +81,5 @@ private extension MCalendarView {
 
 // MARK: - Modifiers
 private extension MCalendarView {
-    func scrollToDate(_ reader: ScrollViewProxy, animatable: Bool) {
-        guard let date = configData.scrollDate else { return }
-
-        let scrollDate = date.start(of: .month)
-        withAnimation(animatable ? .default : nil) { reader.scrollTo(scrollDate, anchor: .center) }
-    }
     func onMonthChange(_ date: Date) { configData.onMonthChange(date) }
 }

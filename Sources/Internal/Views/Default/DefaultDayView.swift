@@ -16,4 +16,14 @@ struct DefaultDayView: DayView {
     let isCurrentMonth: Bool
     let selectedDate: Binding<Date?>?
     let selectedRange: Binding<MDateRange?>?
+  
+    func createContent() -> some View {
+      ZStack {
+        createDayLabel()
+      }
+    }
+  
+    func createDayLabel() -> some View {
+      Text(date.formatted())
+    }
 }
