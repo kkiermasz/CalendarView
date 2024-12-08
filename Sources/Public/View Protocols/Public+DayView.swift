@@ -17,7 +17,7 @@ public protocol DayView: View {
     // MARK: Attributes
     var date: Date { get }
     var isCurrentMonth: Bool { get }
-    var selectedDate: Binding<Date?>? { get }
+    var selectedDate: Binding<Date>? { get }
     var selectedRange: Binding<MDateRange?>? { get }
 
     // MARK: View Customisation

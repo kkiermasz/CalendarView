@@ -12,7 +12,7 @@
 import SwiftUI
 
 struct MonthView: View {
-    @Binding var selectedDate: Date?
+    @Binding var selectedDate: Date
     @Binding var selectedRange: MDateRange?
     let data: Data.MonthView
     let config: CalendarConfig

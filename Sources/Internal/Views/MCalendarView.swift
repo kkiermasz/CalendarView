@@ -12,7 +12,7 @@
 import SwiftUI
 
 public struct MCalendarView: View {
-    @Binding var selectedDate: Date?
+    @Binding var selectedDate: Date
     @Binding var selectedRange: MDateRange?
     @State var scrolledID: Date? = {
       Date.now.start(of: .month)
@@ -20,7 +20,7 @@ public struct MCalendarView: View {
     let monthsData: [Data.MonthView]
     let configData: CalendarConfig
 
-    init(_ selectedDate: Binding<Date?>, _ selectedRange: Binding<MDateRange?>, _ configBuilder: (CalendarConfig) -> CalendarConfig) {
+    init(_ selectedDate: Binding<Date>, _ selectedRange: Binding<MDateRange?>, _ configBuilder: (CalendarConfig) -> CalendarConfig) {
         _selectedDate = selectedDate
         _selectedRange = selectedRange
         self.configData = configBuilder(.init())
@@ -51,9 +51,8 @@ private extension MCalendarView {
       }
       .scrollTargetBehavior(.viewAligned)
       .onChange(of: selectedDate) {
-        guard let date = selectedDate else { return }
         withAnimation {
-          proxy.scrollTo(date.start(of: .month), anchor: .top)
+          proxy.scrollTo(selectedDate.start(of: .month), anchor: .top)
         }
       }
       .task {

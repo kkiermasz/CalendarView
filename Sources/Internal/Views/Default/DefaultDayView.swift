@@ -14,7 +14,7 @@ import SwiftUI
 struct DefaultDayView: DayView {
     let date: Date
     let isCurrentMonth: Bool
-    let selectedDate: Binding<Date?>?
+    let selectedDate: Binding<Date>?
     let selectedRange: Binding<MDateRange?>?
   
     func createContent() -> some View {

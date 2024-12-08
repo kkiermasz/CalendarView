@@ -13,7 +13,7 @@ import SwiftUI
 
 extension MCalendarView {
   public init(
-    selectedDate: Binding<Date?>,
+    selectedDate: Binding<Date>,
     selectedRange: Binding<MDateRange?>,
     configBuilder: (CalendarConfig) -> CalendarConfig = { $0 }
   ) {
