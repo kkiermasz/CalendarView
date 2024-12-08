@@ -14,9 +14,6 @@ import SwiftUI
 public struct MCalendarView: View {
     @Binding var selectedDate: Date
     @Binding var selectedRange: MDateRange?
-    @State var scrolledID: Date? = {
-      Date.now.start(of: .month)
-    }()
     let monthsData: [Data.MonthView]
     let configData: CalendarConfig
 
@@ -55,8 +52,10 @@ private extension MCalendarView {
           proxy.scrollTo(selectedDate.start(of: .month), anchor: .top)
         }
       }
-      .task {
-        proxy.scrollTo(scrolledID, anchor: .top)
+      .onAppear {
+        DispatchQueue.main.async {
+          proxy.scrollTo(Date.now.start(of: .month), anchor: .top)
+        }
       }
     }
   }
